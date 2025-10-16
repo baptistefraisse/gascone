@@ -7,7 +7,7 @@
 import os
 from env import *
 from unfolding import g_mult_unfolding
-from plots import plot_g_mult, plot_angmom
+from plots import plot_g_mult, plot_angmom, plot_ab_fit
 from angmom import angmom_capture, angmom_emission, angmom_frag, electric_trans
 
 # run
@@ -28,6 +28,10 @@ if __name__ == "__main__":
     # merging
 
     g_mult_raw = np.concatenate((g_mult_raw_56us[:4], g_mult_raw_5us6[4:30]))
+
+    # A, B fit
+
+    _ = plot_ab_fit(FILENAMES)
 
     # unfolding
 

@@ -10,7 +10,7 @@ from plots import *
 
 # functions 
 
-def scone_response(a, b, g_mult):
+def gamma_unfolding(a, b, g_mult):
     """
     SCONE response function to pure fission gamma-rays.
 
@@ -34,7 +34,7 @@ def scone_response(a, b, g_mult):
     return g_mult_corr
 
 
-def scone_response_uq(a, da, b, db, g_mult, g_mult_err=None):
+def gamma_unfolding_uq(a, da, b, db, g_mult, g_mult_err=None):
     """
     SCONE response function to pure fission gamma-rays 
     with uncertainty quantification.
@@ -55,7 +55,7 @@ def scone_response_uq(a, da, b, db, g_mult, g_mult_err=None):
     # average response correction
 
     g_mult = np.asarray(g_mult, dtype=float)
-    g_mult_corr = scone_response(a, b, g_mult)
+    g_mult_corr = gamma_unfolding(a, b, g_mult)
 
     # error propagation with partial derivatives
 
@@ -139,5 +139,5 @@ def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_er=None):
 
     # unfolding
 
-    g_mult_corr, g_mult_corr_err = scone_response_uq(A, DA, B, DB, g_mult, g_mult_err)
+    g_mult_corr, g_mult_corr_err = gamma_unfolding_uq(A, DA, B, DB, g_mult, g_mult_err)
     return g_mult_corr, g_mult_corr_err

@@ -3,6 +3,7 @@
 # librairies 
 
 from utils import *
+from response import fit_scone_gconst_multiple
 
 # plots font size
 
@@ -14,10 +15,18 @@ SN = 0.5
 SNU_MIN = 0.5
 SNU_MAX = 1.0
 
+# Geant4 files
+
+FILENAMES = [
+    "Geant4_235U_10MeV.txt",
+    "Geant4_238U_1MeV.txt",
+    "Geant4_238U_10MeV.txt",
+    "Geant4_238U_19MeV.txt"
+    ]
+
 # SCONE constants 
 
-A, DA = 19, 0.5
-B, DB = 28, 1
+A, B, DA, DB = fit_scone_gconst_multiple(FILENAMES)
 C, DC = 0.33, 0.01
 
 # evaluations : nubar JEFF-4.1
