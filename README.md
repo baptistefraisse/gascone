@@ -34,13 +34,15 @@ python3 main.py
 
 All the parameters the user would like to change are in ***env.py*** :
 
-- The SCONE's constants (A, B, C) and errors (DA, DB, DC).
+- The fission $\gamma$-rays cascade files for fitting A and B (SCONE's response constants to $\gamma$-rays).
+- The SCONE's response constant to neutrons (C) and its uncertainty (DC).
 - The explored angular momentum range taken away by prompt neutrons (SN_MIN, SN_MAX).
 - The font size for plots (FONT_SIZE).
 
 ## **To do list**
-
-- [short-term] Include the extraction SCONE's constants from Geant4 simulation fits.
+ 
+- [short-term] Include G.Scamps simulation data and fit them directly in the code.
+- [short-term] Include neutron cascades simulations and fit C directly in the code.
 - [short-term] Include statistical errors.
 - [long-term] Enable $\gamma$-rays analysis for spontaneous fission experiments.
 - [long-term] Include the $\gamma$-rays total energy.
