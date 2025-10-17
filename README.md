@@ -2,22 +2,22 @@
 
 ## **Description**  
 
-GASCONE is a high-level analysis module for SCONE [1]. It is intended to unfold and analyse $\gamma$-rays observables from neutron-induced fission experiments involving SCONE.
+GASCONE is a high-level analysis module for SCONE [1]. It is intended to unfold and analyse $\gamma$-rays observables from fission experiments with SCONE.
 
 ## **Inputs**  
 
-GASCONE's main input is a CSV file from low-level analysis, containing the complete multplicity distribution of assemblies fired within a 50 ns coincidence-window opened by fission chamber triggers and binned by incident neutron energy [2]. The file is to be stored in ***data/scone/***.
+The main input is a CSV file produced by low-level analysis, containing the complete multplicity distribution of assemblies fired within a 50 ns coincidence-window after a fission chamber trigger and binned by incident neutron energy [2]. This input file is stored in ***data/scone/***.
 
-GASCONE also uses external data.
+External data are also used:
 
-- Existing measurements of fission $\gamma$-rays in the literature [3, 4] in ***data/scone/***.
-- Average neutron-multiplicity from the evaluated library JEFF-4.0 [5] in ***data/evaluations/***.
-- Fission codes simulations data from CGMF [6] and GEF [7] in ***data/simulations/***.
-- Geant4 simulations of SCONE response to fission $\gamma$-rays cascades ***data/geant4/***.
+- In ***data/literature/***: existing measurements of fission $\gamma$-rays in the literature [3, 4].
+- In ***data/evaluations/***: evaluated fission neutron multiplicities from JEFF-4.0 [5].
+- In ***data/simulations/***: $\gamma$-rays from fission codes such as CGMF [6] and GEF [7].
+- In ***data/geant4/***: Geant4 simulations of SCONE response to fission $\gamma$-rays.
 
 ## **Outputs**  
 
-GASCONE's output is a CSV file of unfolded average $\gamma$-rays multiplicities saved in ***data/scone/***. Two plots will also be created in ***figs/***, including $\gamma$-rays multiplicities vs. incident energy and incident angular momentum [8].
+The main output is a CSV file of unfolded average $\gamma$-rays multiplicities saved in ***outputs/***. Some plots will also be generated: the fit of SCONE response to fission cascades, $\gamma$-rays multiplicities as a function of incident energy, $\gamma$-rays multiplicities as a function of the fissioning system angular momentum.
 
 ## **Installation and use**
 
@@ -34,10 +34,10 @@ python3 main.py
 
 All the parameters the user would like to change are in ***env.py*** :
 
-- The fission $\gamma$-rays cascade files for fitting A and B (SCONE's response constants to $\gamma$-rays).
+- The files of Geant4 simulations to SCONE response to fission cascade. 
 - The SCONE's response constant to neutrons (C) and its uncertainty (DC).
-- The explored angular momentum range taken away by prompt neutrons (SN_MIN, SN_MAX).
-- The font size for plots (FONT_SIZE).
+- The range of angular momentum of prompt neutrons (SN_MIN, SN_MAX).
+- The font size of plots (FONT_SIZE).
 
 ## **To do list**
  

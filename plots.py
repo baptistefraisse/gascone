@@ -77,7 +77,7 @@ def plot_g_mult(energies, g_mult, g_mult_err):
     # save
     
     plt.legend(loc = 'upper left',frameon=False, title_fontsize=FONT_SIZE)
-    dir = FIG_DIR/'g_mult.png'
+    dir = OUT_DIR/'g_mult.pdf'
     plt.savefig(dir, bbox_inches='tight')
     return dir
 
@@ -156,7 +156,7 @@ def plot_angmom(energies, g_mult, g_mult_err):
 
     # save and return 
 
-    dir = FIG_DIR/'angmom.png'
+    dir = OUT_DIR/'angmom.pdf'
     plt.savefig(dir, bbox_inches='tight')
     return dir
 
@@ -240,6 +240,6 @@ def plot_ab_fit(filenames, mult_range=None):
     # save and return
 
     plt.legend(loc = 'upper left', frameon=False, title_fontsize=FONT_SIZE)
-    savename = "AB_fit.png"
-    plt.savefig(FIG_DIR/savename, dpi=300)
+    savename = "AB_fit.pdf"
+    plt.savefig(OUT_DIR/savename, dpi=300)
     return savename

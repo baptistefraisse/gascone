@@ -104,7 +104,7 @@ def ng_pileup(e):
     return pileup
 
 
-def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_er=None):
+def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_err=None, out_name=None):
     """
     Gamma-rays multiplicity unfolded from SCONE measurements.
 
@@ -112,6 +112,7 @@ def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_er=None):
         energies (narray): Incident neutron energies [MeV].
         g_mult_raw (narray): Raw measurements of gamma-rays nultiplicity by SCONE.
         g_mult_raw_err (narray): 1-sigma statistical error of g_mult_raw.
+        out_name (str): Name of the output CSV file.
 
     Returns:
         (narray): Unfolded gamma-rays multiplicities.
@@ -128,8 +129,8 @@ def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_er=None):
 
     err_terms = [n_contam_err]
 
-    if g_mult_raw_er is not None:
-        err_terms.append(np.asarray(g_mult_raw_er, dtype=float))
+    if g_mult_raw_err is not None:
+        err_terms.append(np.asarray(g_mult_raw_err, dtype=float))
 
     if len(err_terms) == 1:
         g_mult_err = err_terms[0]
@@ -140,4 +141,17 @@ def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_er=None):
     # unfolding
 
     g_mult_corr, g_mult_corr_err = gamma_unfolding_uq(A, DA, B, DB, g_mult, g_mult_err)
+
+    # saving csv
+
+    if out_name is not None:
+        data = np.column_stack([energies, g_mult_corr, g_mult_corr_err])
+        np.savetxt(
+            OUT_DIR/out_name,
+            data,
+            fmt="%.3g %.3g %.3g",
+            header="energy g_mult g_mult_err",
+            comments=""
+        )
+
     return g_mult_corr, g_mult_corr_err
