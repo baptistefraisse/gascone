@@ -2,7 +2,7 @@
 
 ## **Description**  
 
-GASCONE is a high-level analysis module for SCONE [1]. It is intended to unfold and analyse $\gamma$-rays observables from fission experiments with SCONE.
+**GASCONE** is a high-level analysis framework for **SCONE** [1], aimed at unfolding and analyzing $\gamma$-ray observables from fission experiments.
 
 ## **Inputs**  
 
