@@ -18,10 +18,10 @@ SNU_MAX = 1.0
 # Geant4 files
 
 FILENAMES = [
-    "Geant4_235U_10MeV.txt",
-    "Geant4_238U_1MeV.txt",
-    "Geant4_238U_10MeV.txt",
-    "Geant4_238U_19MeV.txt"
+    "Geant4_CGMF_235U_10MeV.txt",
+    "Geant4_GEF_238U_20MeV.txt",
+    "Geant4_CGMF_238U_1MeV.txt",
+    "Geant4_FIFRELIN_252Cf.txt"
     ]
 
 # SCONE constants 

@@ -2,7 +2,6 @@
 
 # librairies
 
-import re
 from env import *
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -41,7 +40,9 @@ def plot_g_mult(energies, g_mult, g_mult_err):
     ax.yaxis.set_tick_params(which='minor', size=7, width=2, direction='in', right='on')
     plt.xticks(fontsize=FONT_SIZE)
     plt.yticks(fontsize=FONT_SIZE)
-    plt.ylim(4.8,9.9)
+    plt.ylim(4.8,9.2)
+    ax.set_xticks([0, 10, 20, 30])
+    ax.set_yticks([5, 6, 7, 8, 9])
     plt.xlabel(r'Incident neutron energy: $E_\mathrm{n}$ (MeV)',size=FONT_SIZE)
     plt.ylabel(r'Average $\gamma$-rays multiplicity: $\bar{n}_\gamma$',size=FONT_SIZE)
 
@@ -77,8 +78,8 @@ def plot_g_mult(energies, g_mult, g_mult_err):
     # save
     
     plt.legend(loc = 'upper left',frameon=False, title_fontsize=FONT_SIZE)
-    dir = OUT_DIR/'g_mult.pdf'
-    plt.savefig(dir, bbox_inches='tight')
+    dir = FIG_DIR/'g_mult.pdf'
+    plt.savefig(dir, format="pdf", bbox_inches='tight')
     return dir
 
 
@@ -156,35 +157,46 @@ def plot_angmom(energies, g_mult, g_mult_err):
 
     # save and return 
 
-    dir = OUT_DIR/'angmom.pdf'
-    plt.savefig(dir, bbox_inches='tight')
+    dir = FIG_DIR/'angmom.pdf'
+    plt.savefig(dir, format="pdf", bbox_inches='tight')
     return dir
 
-
-
-import re
 
 def parse_filename_label(filename):
     """
     Parse filenames like:
-      - "Geant4_238U_10MeV.txt" → "238U (10 MeV)"
-      - "Geant4_235U_1MeV.txt"  → "235U (1 MeV)"
-      - "Geant4_252Cf.txt"      → "252Cf (spontaneous)"
+      - "Geant4_238U_GEF_10MeV.txt"    → "238U GEF (10 MeV)"
+      - "Geant4_235U_CGMF_1MeV.txt"    → "235U CGMF (1 MeV)"
+      - "Geant4_252Cf_FIFRELIN.txt"    → "252Cf FIFRELIN (spontaneous)"
+      - "Geant4_252Cf.txt"             → "252Cf (spontaneous)"
     """
     base = filename.replace(".txt", "").replace("Geant4_", "")
     parts = base.split("_")
 
+    # Cas 1 : seulement le noyau
     if len(parts) == 1:
         nucleus = parts[0]
         label = f"{nucleus} (spontaneous)"
 
-    elif len(parts) == 2:
+    # Cas 2 : noyau + énergie
+    elif len(parts) == 2 and parts[1].endswith("MeV"):
         nucleus, energy_raw = parts
-        energy = re.sub(r"([0-9]+)MeV", r"\1 MeV", energy_raw)
+        energy = energy_raw.replace("MeV", " MeV")
         label = f"{nucleus} ({energy})"
 
+    # Cas 3 : noyau + modèle
+    elif len(parts) == 2:
+        model, nucleus = parts
+        label = f"{nucleus} {model} (spontaneous)"
+
+    # Cas 4 : noyau + modèle + énergie
+    elif len(parts) == 3:
+        model, nucleus, energy_raw = parts
+        energy = energy_raw.replace("MeV", " MeV")
+        label = f"{nucleus} {model} ({energy})"
+
     else:
-        label = base
+        raise ValueError(f"Unexpected filename format: {filename}")
 
     return label
 
@@ -193,15 +205,9 @@ def parse_filename_label(filename):
 def plot_ab_fit(filenames, mult_range=None):
     """
     Plot the fit of A and B SCONE constants from multiple Geant4 simulations.
-
-    Args:
-        filenames (list): _description_
-        mult_range (_type_, optional): _description_. Defaults to None.
     """
 
-    # figure design
-
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+    fig, ax = plt.subplots(figsize=(10, 10))
     fig.tight_layout()
     ax.xaxis.set_tick_params(which='major', size=10, width=2, direction='in', top='on')
     ax.xaxis.set_tick_params(which='minor', size=7, width=2, direction='in', top='on')
@@ -209,37 +215,48 @@ def plot_ab_fit(filenames, mult_range=None):
     ax.yaxis.set_tick_params(which='minor', size=7, width=2, direction='in', right='on')
     plt.xticks(fontsize=FONT_SIZE)
     plt.yticks(fontsize=FONT_SIZE)
-    plt.xlabel("Emitted gamma-rays multiplicity",size=FONT_SIZE)
-    plt.ylabel("Average detected multiplicity (SCONE)",size=FONT_SIZE)
-    ax.set_xlim(0.1,15.5)
-    ax.set_ylim(0.1,11.5)
-    ax.set_xticks([0,2,4,6,8,10,12,14])
-    ax.set_yticks([2,4,6,8,10])
+    plt.xlabel("Emitted gamma-rays multiplicity", size=FONT_SIZE)
+    plt.ylabel("Average detected multiplicity (SCONE)", size=FONT_SIZE)
+    ax.set_xlim(0.1, 17.5)
+    ax.set_ylim(0.1, 13.5)
+    ax.set_xticks([0, 4, 8, 12, 16])
+    ax.set_yticks([2, 4, 6, 8, 10, 12])
+
     colors = plt.cm.tab10(np.linspace(0, 1, len(filenames)))
     markers = ["o", "s", "D", "^", "v", ">", "<", "p", "P", "X"]
 
-    # geant4 data
-
+    # Geant4 data
+    handles_data, labels_data = [], []
     for i, fname in enumerate(filenames):
-
         label = parse_filename_label(fname)
         x, y = fission_gcasc_resp(fname, mult_range=mult_range)
         marker = markers[i % len(markers)]
-        plt.scatter(x, y, color=colors[i], s=100, marker=marker, label=label)
+        h = ax.scatter(x, y, color=colors[i], s=100, marker=marker, label=label)
+        handles_data.append(h)
+        labels_data.append(label)
 
-    # global fit
-    
+    # Global fit
     a, b, da, db = fit_scone_gconst_multiple(FILENAMES)
-    xfit = np.linspace(0, 1.1*max(x), 400)
+    print(a, b, da, db)
+    xfit = np.linspace(0, 1.1 * max(x), 400)
     yfit = g_mult_scone(a, b, xfit)
-    yfit_min = g_mult_scone(a-da, b+db, xfit)
-    yfit_max = g_mult_scone(a+da, b-db, xfit)
-    plt.plot(xfit, yfit, color="black", linewidth=3, label=f"Average fit")
-    plt.fill_between(xfit, yfit_min, yfit_max, color="gray", alpha=0.3, label=r"Fit uncertainty (1$\sigma$)")
-    
-    # save and return
+    yfit_min = g_mult_scone(a - 3*da, b + 3*db, xfit)
+    yfit_max = g_mult_scone(a + 3*da, b - 3*db, xfit)
 
-    plt.legend(loc = 'upper left', frameon=False, title_fontsize=FONT_SIZE)
+    line_fit, = ax.plot(xfit, yfit, color="black", linewidth=3, label="Average fit")
+    band_fit = ax.fill_between(xfit, yfit_min, yfit_max, color="gray", alpha=0.3, label=r"Fit uncertainty (3$\sigma$)")
+
+    # --- Two separate legends ---
+    order = sorted(range(len(labels_data)), key=lambda i: 0 if "252Cf" in labels_data[i] else 1)
+    handles_data = [handles_data[i] for i in order]
+    labels_data = [labels_data[i] for i in order]
+    legend1 = ax.legend(handles=handles_data, labels=labels_data, loc='upper left', frameon=False)
+    ax.add_artist(legend1)
+
+    handles_fit = [line_fit, band_fit]
+    labels_fit = ["Average fit", r"Fit uncertainty (3$\sigma$)"]
+    ax.legend(handles_fit, labels_fit, loc='lower right', frameon=False)
+
     savename = "AB_fit.pdf"
-    plt.savefig(OUT_DIR/savename, dpi=300)
+    plt.savefig(FIG_DIR / savename, format="pdf", bbox_inches='tight')
     return savename

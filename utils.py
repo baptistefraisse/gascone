@@ -14,6 +14,7 @@ from pathlib import Path
 
 PROJECT_DIR = Path('.') 
 OUT_DIR = PROJECT_DIR / 'outputs'
+FIG_DIR = PROJECT_DIR / 'figs'
 DATA_DIR = PROJECT_DIR / 'data'
 SCONE_DIR = DATA_DIR / 'scone'
 GEANT4_DIR = DATA_DIR / 'geant4'
