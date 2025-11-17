@@ -104,14 +104,14 @@ def ng_pileup(e):
     return pileup
 
 
-def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_err=None, out_name=None):
+def g_mult_unfolding(energies, g_mult_raw, stat_err=None, out_name=None):
     """
     Gamma-rays multiplicity unfolded from SCONE measurements.
 
     Args:
         energies (narray): Incident neutron energies [MeV].
         g_mult_raw (narray): Raw measurements of gamma-rays nultiplicity by SCONE.
-        g_mult_raw_err (narray): 1-sigma statistical error of g_mult_raw.
+        stat_err (narray): 1-sigma statistical error of g_mult_raw.
         out_name (str): Name of the output CSV file.
 
     Returns:
@@ -129,8 +129,8 @@ def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_err=None, out_name=None):
 
     err_terms = [n_contam_err]
 
-    if g_mult_raw_err is not None:
-        err_terms.append(np.asarray(g_mult_raw_err, dtype=float))
+    if stat_err is not None:
+        err_terms.append(np.asarray(stat_err, dtype=float))
 
     if len(err_terms) == 1:
         g_mult_err = err_terms[0]
@@ -141,6 +141,7 @@ def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_err=None, out_name=None):
     # unfolding
 
     g_mult_corr, g_mult_corr_err = gamma_unfolding_uq(A, DA, B, DB, g_mult, g_mult_err)
+    stat_err_corr = gamma_unfolding(A, B, stat_err)
 
     # saving csv
 
@@ -154,4 +155,4 @@ def g_mult_unfolding(energies, g_mult_raw, g_mult_raw_err=None, out_name=None):
             comments=""
         )
 
-    return g_mult_corr, g_mult_corr_err
+    return g_mult_corr, g_mult_corr_err, stat_err_corr

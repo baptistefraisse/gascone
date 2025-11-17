@@ -119,8 +119,27 @@ def scone_meas(filename = "238U_meas_mg_56us.csv"):
     X_grid, Y_grid = np.clip(X_grid,1,30), np.clip(Y_grid,0,20)
     Z_grid = Z_normalized.values
     Z_grid = np.clip(Z_grid,0,0.2)
-    mean_Y = (Z_normalized.index.values[:,None]*Z_normalized.values).sum(axis=0)/Z_normalized.sum(axis=0)
+
+    # simple values
+
+    y_vals = Z_normalized.index.values[:, None]
+    p = Z_normalized.values 
+
+    # statistical moments
+
+    mean_Y = (y_vals*p).sum(axis=0)/Z_normalized.sum(axis=0)
+    mean_Y2 = ((y_vals**2) * p).sum(axis=0)/Z_normalized.sum(axis=0)
+    var_Y = mean_Y2 - mean_Y**2
+    var_Y = np.where(var_Y < 0, 0.0, var_Y) # protection against negative artefacts
+
+    with np.errstate(divide='ignore', invalid='ignore'):
+        sigma_mean = np.sqrt(var_Y / Z_pivot.sum(axis=0).values)
+        sigma_mean[~np.isfinite(sigma_mean)] = np.nan
+
+    # final outputs
+
     multg_raw = np.array(mean_Y)[1:31]
+    multg_err = np.array(sigma_mean)[1:31]
     energies = np.unique(X)[1:31]
 
-    return energies, multg_raw
+    return energies, multg_raw, multg_err

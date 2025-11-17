@@ -14,17 +14,22 @@ plt.rcParams.update({'font.size': FONT_SIZE, 'font.family': 'times new roman'})
 mpl.rcParams['mathtext.fontset']='stix'
 mpl.rcParams['font.family']='STIXGeneral'
 mpl.rcParams['axes.linewidth'] = 2
+plt.rcParams['pdf.fonttype'] = 42     # Texte en polices TrueType (pas converti en chemins)
+plt.rcParams['ps.fonttype'] = 42
+plt.rcParams['lines.linewidth'] = 1.0 # Réduit l'épaisseur par défaut des courbes
+plt.rcParams['axes.linewidth'] = 1.0  # Bordures d'axes plus fines
 
 # plot gamma-rays multiplicity
 
-def plot_g_mult(energies, g_mult, g_mult_err):
+def plot_g_mult(energies, g_mult, syst_err, stat_err):
     """
     Plotting gamma-rays multiplicity vs. incident energy.
 
     Args:
         energies (narray): Incident neutron energies [MeV].
         g_mult (narray): Unfolded gamma-rays multiplicity measurements by SCONE.
-        g_mult_err (narray): 1-sigma error on unfolded gamma-rays multiplicities.
+        syst_err (narray): 1-sigma systematic error on unfolded gamma-rays multiplicities.
+        stat_err (narray): 1-sigma statistical error on unfolded gamma-rays multiplicities.
 
     Returns:
         (str): Plot file direction.
@@ -49,37 +54,47 @@ def plot_g_mult(energies, g_mult, g_mult_err):
     # scone 
 
     plt.errorbar(energies, g_mult, 
-                 xerr = [0.5 for i in energies], yerr= g_mult_err,
-                 fmt='.', color='red', linewidth=2, markersize=2,
-                 label="SCONE (thres. 200 keV)")
+                 xerr = [0.5 for i in energies], yerr=stat_err,
+                 fmt='.', color='red', linewidth=2, markersize=2, linestyle='none',
+                 label="SCONE (thres. 200 keV)"
+                 )
+    
+    plt.fill_between(energies, g_mult-syst_err, g_mult+syst_err,
+        color='red',alpha=0.15,
+        #label='Systematic uncertainty'
+    )
 
     # literature
 
     plt.errorbar(laborie_energies, laborie_mult, 
                  xerr = laborie_energies_err, yerr=laborie_mult_err, 
                  fmt='s', color='black', linewidth=3, markersize=7,
-                 label="Laborie (thres. 190 keV)")
+                 label="Laborie (thres. 190 keV)"
+                 )
     
     plt.errorbar(qi_energies, qi_mult,
                  yerr=qi_mult_err,
                  fmt='o', color='green', linewidth=3, markersize=7,
-                 label="Qi (thres. 200 keV)")
+                 label="Qi (thres. 200 keV)"
+                 )
     
     # simulations
 
     plt.plot(cgmf_energies, cgmf_mult,
              linestyle='-', linewidth=3, color='blue',
-             label="CGMF (thres. 200 keV)")
+             label="CGMF (thres. 200 keV)"
+             )
     
     plt.plot(gef_energies, gef_mult,
              linestyle='--', linewidth=3, color='saddlebrown',
-             label="GEF (thres. 200 keV)")
+             label="GEF (thres. 200 keV)"
+             )
     
     # save
     
     plt.legend(loc = 'upper left',frameon=False, title_fontsize=FONT_SIZE)
     dir = FIG_DIR/'g_mult.pdf'
-    plt.savefig(dir, format="pdf", bbox_inches='tight')
+    plt.savefig(dir, format="pdf", bbox_inches='tight', dpi=300)
     return dir
 
 
@@ -158,7 +173,7 @@ def plot_angmom(energies, g_mult, g_mult_err):
     # save and return 
 
     dir = FIG_DIR/'angmom.pdf'
-    plt.savefig(dir, format="pdf", bbox_inches='tight')
+    plt.savefig(dir, format="pdf", bbox_inches='tight', dpi=300)
     return dir
 
 
@@ -258,5 +273,5 @@ def plot_ab_fit(filenames, mult_range=None):
     ax.legend(handles_fit, labels_fit, loc='lower right', frameon=False)
 
     savename = "AB_fit.pdf"
-    plt.savefig(FIG_DIR / savename, format="pdf", bbox_inches='tight')
+    plt.savefig(FIG_DIR / savename, format="pdf", bbox_inches='tight', dpi=300)
     return savename
