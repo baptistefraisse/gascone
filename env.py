@@ -12,8 +12,8 @@ FONT_SIZE = 30
 # physics constants 
 
 SN = 0.5
-SNU_MIN = 0.5
-SNU_MAX = 1.0
+SNU_MIN = 0.0
+SNU_MAX = 0.5
 
 # Geant4 files
 

@@ -41,7 +41,7 @@ def angmom_emission(s, nubar):
     Returns:
         float or narray: Average angular momentum taken away by the neutron cascade [hbar unit].
     """
-    return (s-SN) * nubar
+    return s * nubar
 
 
 def angmom_frag(frag_ratio, l):

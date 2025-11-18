@@ -166,7 +166,7 @@ def plot_angmom(energies, g_mult, g_mult_err):
     plt.legend(loc = 'upper left', frameon=False, title_fontsize=FONT_SIZE)
 
     plt.annotate(r'Pure E2 and 1$\hbar$ / prompt neutron',
-                 ha='center', va='bottom', xytext=(3.3,0.45), xy=(3.3,0.45), rotation=21)
+                 ha='center', va='bottom', xytext=(3.7,0.55), xy=(3.,0.55), rotation=21)
     plt.annotate(r'Pure E1 and 0.5$\hbar$ / prompt neutron',
                  ha='center', va='bottom', xytext=(2.5,0.85), xy=(2.5,0.85), rotation=48)
 
