@@ -43,15 +43,15 @@ All the parameters the user would like to change are in ***env.py*** :
 
 ## **References**
 
-[1] G. Belier _et al._, Nucl. Instrum. Methods Phys. Res. A **1072**, 170225 (2025)
+[1] G. Belier _et al._, Nucl. Instrum. Methods Phys. Res. A **1072**, 170225 (2025).
 
-[2] B.Fraisse, PhD thesis, Univ. Paris-Saclay (2024)
+[2] B. Fraisse, PhD thesis, Univ. Paris-Saclay (2024).
 
 [3] L. Qi. PhD thesis, Univ. Paris-Saclay (2018).
 
 [4] J.-M. Laborie et al. Phys. Rev. C **98**, 054604 (2018).
 
-[5] Joint Evaluated Fission and Fusion Project. (2025). JEFF-4.0 Evaluated Data: neutron data [Data set]. OECD Nuclear Energy Agency. https://doi.org/10.82555/e9ajn-a3p20
+[5] Joint Evaluated Fission and Fusion Project. (2025). JEFF-4.0 Evaluated Data. OECD NEA.
 
 [6] P. Talou et al. Comp. Phys. Comm. **269**, 108087 (2021).
 
