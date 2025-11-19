@@ -154,8 +154,8 @@ def plot_angmom(energies, g_mult, g_mult_err):
 
     # L from microscopic calculations (G. Scamps)
 
-    ymin = g_mult_electrans(j0, s = SNU_MAX, frag_ratio = 0.3, pole = 2)
-    ymax = g_mult_electrans(j0, s = SNU_MIN, frag_ratio = 0.3, pole = 1)
+    ymin = g_mult_electrans(j0, s = SNU_MAX, frag_ratio = FRAG_MOM_MICRO, pole = 2)
+    ymax = g_mult_electrans(j0, s = SNU_MIN, frag_ratio = FRAG_MOM_MICRO, pole = 1)
     dymin = diff_init(ymin)
     dymax = diff_init(ymax)
 

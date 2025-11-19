@@ -37,15 +37,9 @@ All the parameters the user would like to change are in ***env.py*** :
 - The files of Geant4 simulations to SCONE response to fission cascade. 
 - The SCONE's response constant to neutrons (C) and its uncertainty (DC).
 - The range of angular momentum of prompt neutrons (SN_MIN, SN_MAX).
+- The microscopic result of angular momentum transfer to fragments (FRAG_MOM_MICRO).
 - The font size of plots (FONT_SIZE).
 
-## **To do list**
- 
-- [short-term] Include G.Scamps simulation data and fit them directly in the code.
-- [short-term] Include neutron cascades simulations and fit C directly in the code.
-- [short-term] Include statistical errors.
-- [long-term] Enable $\gamma$-rays analysis for spontaneous fission experiments.
-- [long-term] Include the $\gamma$-rays total energy.
 
 ## **References**
 
