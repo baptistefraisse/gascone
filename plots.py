@@ -55,7 +55,7 @@ def plot_g_mult(energies, g_mult, syst_err, stat_err):
 
     plt.errorbar(energies, g_mult, 
                  xerr = [0.5 for i in energies], yerr=stat_err,
-                 fmt='.', color='red', linewidth=2, markersize=2, linestyle='none',
+                 fmt='.', color='red', linewidth=3, markersize=7, linestyle='none',
                  label="SCONE (thres. 200 keV)"
                  )
     
@@ -129,15 +129,17 @@ def plot_angmom(energies, g_mult, g_mult_err):
     ax.set_ylim(-0.5,6.5)
     ax.set_yticks([0,1,2,3,4,5,6])
 
-    # scone
+    # SCONE
 
     j0, j0_err = angmom_capture(energies)
     dj0 = diff_init(j0)
     dg_mult = diff_init(g_mult)
+    dg_mult_err = np.sqrt(np.array(g_mult_err)**2 + g_mult_err[0]**2)
 
     plt.errorbar(dj0, dg_mult,
-                 xerr = j0_err, yerr = g_mult_err,
-                 fmt='.', color='red', label="SCONE (thres. 200 keV)")
+                 xerr = j0_err, yerr = dg_mult_err,
+                 fmt='.', color='red', linewidth=3, markersize=7, linestyle='none',
+                 label="SCONE (thres. 200 keV)")
 
     # L = 0 assumption
 
@@ -159,16 +161,16 @@ def plot_angmom(energies, g_mult, g_mult_err):
 
     plt.fill_between(dj0, dymin, dymax, 
                      alpha=0.3, color='blue', 
-                     label=r'$\Delta{}L_\mathrm{micro}$')
+                     label=r'$\Delta{}L_\mathrm{TDHF+BCS}$')
 
     # legend and annotations
     
     plt.legend(loc = 'upper left', frameon=False, title_fontsize=FONT_SIZE)
 
-    plt.annotate(r'Pure E2 and 1$\hbar$ / prompt neutron',
-                 ha='center', va='bottom', xytext=(3.7,0.55), xy=(3.,0.55), rotation=21)
-    plt.annotate(r'Pure E1 and 0.5$\hbar$ / prompt neutron',
-                 ha='center', va='bottom', xytext=(2.5,0.85), xy=(2.5,0.85), rotation=48)
+    plt.annotate(r'Pure E2 and 0.5 $\hbar$ / prompt neutron',
+                 ha='center', va='bottom', xytext=(3.8,0.52), xy=(3.,0.52), rotation=21)
+    plt.annotate(r'Pure E1 and 0 $\hbar$ / prompt neutron',
+                 ha='center', va='bottom', xytext=(2.7,1.05), xy=(2.7,1.05), rotation=48)
 
     # save and return 
 
