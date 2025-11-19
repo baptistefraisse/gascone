@@ -25,10 +25,11 @@ if __name__ == "__main__":
 
     _, g_mult_raw_5us6, stat_err_5us6 = scone_meas(filename = "238U_meas_mg_5us6.csv")
 
-    # merging
+    # merging @ 4 MeV
 
-    g_mult_raw = np.concatenate((g_mult_raw_56us[:4], g_mult_raw_5us6[4:30]))
-    stat_err_raw = np.concatenate((stat_err_56us[:4], stat_err_5us6[4:30]))
+    merg = 3
+    g_mult_raw = np.concatenate((g_mult_raw_56us[:merg], g_mult_raw_5us6[merg:30]))
+    stat_err_raw = np.concatenate((stat_err_56us[:merg], stat_err_5us6[merg:30]))
 
     # A, B fit on Geant4 simulations of SCONE
 
@@ -44,5 +45,5 @@ if __name__ == "__main__":
 
     # plot gamma-rays multiplicity vs. angular momentum
 
-    _ = plot_angmom(energies[1:], g_mult[1:], syst_err[1:])
+    _ = plot_angmom(energies[1:], g_mult[1:], stat_err[1:])
 
