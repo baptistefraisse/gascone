@@ -29,6 +29,10 @@ FILENAMES = [
 A, B, DA, DB = fit_scone_gconst_multiple(FILENAMES)
 C, DC = 0.33, 0.01
 
+# Microscopic calculations result for angular momentum transfer to fragments
+
+FRAG_MOM_MICRO = 0.3
+
 # evaluations : nubar JEFF-4.1
 
 _, _, nubar_jeff, nubar_jeff_err = csv_data_reader(EVAL_DIR/"238U_nubar_JEFF4.csv")
