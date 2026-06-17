@@ -7,6 +7,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from angmom import angmom_capture, g_mult_electrans
 from response import fission_gcasc_resp, g_mult_scone, fit_scone_gconst_multiple
+from calorimetry import compute_total_gamma_energy, GammaEnergyConfig
 
 # plots design
 
@@ -49,7 +50,7 @@ def plot_g_mult(energies, g_mult, syst_err, stat_err):
     ax.set_xticks([0, 10, 20, 30])
     ax.set_yticks([5, 6, 7, 8, 9])
     plt.xlabel(r'Incident neutron energy: $E_\mathrm{n}$ (MeV)',size=FONT_SIZE)
-    plt.ylabel(r'Average $\gamma$-rays multiplicity: $\bar{n}_\gamma$',size=FONT_SIZE)
+    plt.ylabel(r'Average $\gamma$-ray multiplicity: $\bar{n}_\gamma$',size=FONT_SIZE)
 
     # scone 
 
@@ -124,10 +125,49 @@ def plot_angmom(energies, g_mult, g_mult_err):
     ax.yaxis.set_tick_params(which='minor', size=7, width=2, direction='in', right='on')
     plt.xticks(fontsize=FONT_SIZE)
     plt.yticks(fontsize=FONT_SIZE)
-    plt.xlabel(r'$\Delta{}J_0$ ($\hbar$)',size=FONT_SIZE)
+    plt.xlabel(r'$\Delta{}\bar{J}_0$ ($\hbar$)',size=FONT_SIZE)
     plt.ylabel(r'$\Delta{}\bar{n}_\gamma$',size=FONT_SIZE)
     ax.set_ylim(-0.5,6.5)
     ax.set_yticks([0,1,2,3,4,5,6])
+    
+    # Literature data: Qi
+
+    j0_qi, j0_qi_err = angmom_capture(qi_energies)
+    dj0_qi = diff_init(j0_qi)
+    dg_qi = diff_init(qi_mult)
+
+    plt.errorbar(
+        dj0_qi[1:],
+        dg_qi[1:],
+        xerr=None, # no energy error provided in Qi data
+        yerr=[0.12], # stat only for this plot: difference study eliminates syst uncertainties
+        fmt='o',
+        color='green',
+        linewidth=3,
+        markersize=7,
+        linestyle='none',
+        label=r"Qi $\it{et~al.}$"
+    )
+
+    # Literature data: Laborie
+
+    j0_laborie, j0_laborie_err = angmom_capture(laborie_energies, de=[0.1,0.2,0.6])
+    dj0_laborie = diff_init(j0_laborie)
+    dj0_laborie_err = np.sqrt(j0_laborie_err**2 + j0_laborie_err[0]**2)
+    dg_laborie = diff_init(laborie_mult)
+
+    plt.errorbar(
+        dj0_laborie[1:],
+        dg_laborie[1:], 
+        xerr=dj0_laborie_err[1:], # energy error laborie
+        yerr=[0.12, 0.12], # stat only for this plot: difference study eliminates syst uncertainties
+        fmt='s',
+        color='black',
+        linewidth=3,
+        markersize=7,
+        linestyle='none',
+        label=r"Laborie $\it{et~al.}$"
+    )
 
     # SCONE
 
@@ -139,7 +179,7 @@ def plot_angmom(energies, g_mult, g_mult_err):
     plt.errorbar(dj0, dg_mult,
                  xerr = j0_err, yerr = dg_mult_err,
                  fmt='.', color='red', linewidth=3, markersize=7, linestyle='none',
-                 label="SCONE (thres. 200 keV)")
+                 label="SCONE")
 
     # L = 0 assumption
 
@@ -150,7 +190,7 @@ def plot_angmom(energies, g_mult, g_mult_err):
 
     plt.fill_between(dj0, dymin, dymax, 
                      alpha=0.3, color='saddlebrown', 
-                     label=r'$\Delta{}L=0$')
+                     label='Full transfer to fragment spins')
 
     # L from microscopic calculations (G. Scamps)
 
@@ -161,16 +201,16 @@ def plot_angmom(energies, g_mult, g_mult_err):
 
     plt.fill_between(dj0, dymin, dymax, 
                      alpha=0.3, color='blue', 
-                     label=r'$\Delta{}L_\mathrm{TDHF+BCS}$')
+                     label='Microscopic partition\n(TDHF+BCS)')
 
     # legend and annotations
     
     plt.legend(loc = 'upper left', frameon=False, title_fontsize=FONT_SIZE)
 
     plt.annotate(r'Pure E2 and 0.5 $\hbar$ / prompt neutron',
-                 ha='center', va='bottom', xytext=(3.8,0.52), xy=(3.,0.52), rotation=21)
+                 ha='center', va='bottom', xytext=(4.,0.85), xy=(3.2,0.57), rotation=20.5, size=25)
     plt.annotate(r'Pure E1 and 0 $\hbar$ / prompt neutron',
-                 ha='center', va='bottom', xytext=(2.7,1.05), xy=(2.7,1.05), rotation=48)
+                 ha='center', va='bottom', xytext=(3.06,1.3), xy=(2.45,0.85), rotation=48, size=25)
 
     # save and return 
 
@@ -277,3 +317,112 @@ def plot_ab_fit(filenames, mult_range=None):
     savename = "AB_fit.pdf"
     plt.savefig(FIG_DIR / savename, format="pdf", bbox_inches='tight', dpi=300)
     return savename
+
+
+def plot_gamma_energy(df_egamma):
+    """
+    Plot total prompt gamma energy vs incident neutron energy.
+
+    Args:
+        df_egamma (pd.DataFrame): output of compute_total_gamma_energy()
+
+    Returns:
+        (str): Plot file direction.
+    """
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+    fig.tight_layout()
+    ax.xaxis.set_tick_params(which='major', size=10, width=2, direction='in', top='on')
+    ax.xaxis.set_tick_params(which='minor', size=7, width=2, direction='in', top='on')
+    ax.yaxis.set_tick_params(which='major', size=10, width=2, direction='in', right='on')
+    ax.yaxis.set_tick_params(which='minor', size=7, width=2, direction='in', right='on')
+    plt.xticks(fontsize=FONT_SIZE)
+    plt.yticks(fontsize=FONT_SIZE)
+    plt.xlabel(r'Incident neutron energy: $E_\mathrm{n}$ (MeV)', size=FONT_SIZE)
+    plt.ylabel(r'Total $\gamma$-ray energy: $E_{\gamma,\mathrm{tot}}$ (MeV)', size=FONT_SIZE)
+    ax.set_ylim(4.5, 12.5)
+    # ax.set_yticks([2, 4, 6, 8, 10, 12])
+    ax.set_xlim(-1, 32)
+    ax.set_xticks([0, 10, 20, 30])
+
+    energies = df_egamma["energy"].to_numpy()
+    egamma = df_egamma["egamma_tot"].to_numpy()
+    stat_err = df_egamma["egamma_tot_stat"].to_numpy()
+    sys_err = df_egamma["egamma_tot_sys"].to_numpy()
+
+    # SCONE
+
+    plt.errorbar(
+        energies[1:31],
+        egamma[1:31],
+        xerr=[0.5 for _ in energies[1:31]],
+        yerr=stat_err[1:31],
+        fmt='.',
+        color='red',
+        linewidth=3,
+        markersize=7,
+        linestyle='none',
+        label="SCONE"
+    )
+
+    # SCONE systematic uncertainty
+    plt.fill_between(
+        energies[1:31],
+        egamma[1:31] - sys_err[1:31],
+        egamma[1:31] + sys_err[1:31],
+        color='red',
+        alpha=0.15,
+    )
+
+    # Laborie
+
+    plt.errorbar(
+        laborie_energies,
+        laborie_egtot,
+        xerr=laborie_energies_err,
+        yerr=laborie_egtot_err,
+        fmt='s',
+        color='black',
+        linewidth=3,
+        markersize=7,
+        label="Laborie (thres. 190 keV)"
+    )
+
+    # Qi
+
+    plt.errorbar(
+        qi_energies,
+        qi_egtot,
+        yerr=qi_egtot_err,
+        fmt='o',
+        color='green',
+        linewidth=3,
+        markersize=7,
+        label="Qi (thres. 200 keV)"
+    )
+
+    # simulations
+
+    plt.plot(
+        cgmf_energies_egtot,
+        cgmf_egtot,
+        linestyle='-',
+        linewidth=3,
+        color='blue',
+        label="CGMF"
+    )
+
+    plt.plot(
+        gef_energies_egtot,
+        gef_egtot,
+        linestyle='--',
+        linewidth=3,
+        color='saddlebrown',
+        label="GEF"
+    )
+
+    plt.legend(loc='upper left', frameon=False, title_fontsize=FONT_SIZE)
+
+    dir = FIG_DIR / 'egtot.pdf'
+    plt.savefig(dir, format="pdf", bbox_inches='tight', dpi=300)
+    return dir

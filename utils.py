@@ -42,47 +42,78 @@ def diff_init(x):
 # CSV data reader 
 
 
-def csv_data_reader(filepath):
-    """
-    Read CSV data file containing an observable and its error (optional)
-    versus an incident energy and its error (optional).
+def csv_data_reader(filepath, observable="mult", reverse_asym_errors=False):
+    df = pd.read_csv(filepath, sep=r"\s+")
 
-    Args:
-        filepath (str): Path to the  CSV file.
+    energy_col = next((c for c in df.columns if c == "energy"), None)
+    energy_err_col = next(
+        (c for c in df.columns if c in ["energy_error", "energy_err", "err_nrj"]),
+        None,
+    )
 
-    Returns:
-        narray: Incident energies.
-        narray: Incident energies error.
-        narray: Observable.
-        narray: Observable error.
-    """
-
-    df = pd.read_csv(filepath, sep=" ")
-
-    # energy rows
-
-    energy_col = next((c for c in df.columns if "energy" in c), None)
-    energy_err_col = next((c for c in df.columns if "energy_error" in c or "err_nrj" in c), None)
     energies = df[energy_col].to_numpy() if energy_col else None
     energies_err = df[energy_err_col].to_numpy() if energy_err_col else None
 
-    # multiplicity rows
+    value_col = next((c for c in df.columns if c == observable), None)
 
-    mult_col = next((c for c in df.columns if "mult" in c and "error" not in c), None)
-    mult_err_sup_col = next((c for c in df.columns if "mult_error_sup" in c or "err_mult_up" in c), None)
-    mult_err_inf_col = next((c for c in df.columns if "mult_error_inf" in c or "err_mult_low" in c), None)
-    mult_err_col = next((c for c in df.columns if "mult_error" in c or "mult_err" in c and "sup" not in c and "inf" not in c), None)
+    if value_col is None:
+        raise ValueError(f"Column '{observable}' not found in {filepath}")
 
-    mult = df[mult_col].to_numpy() if mult_col else None
+    err_sup_col = next(
+        (
+            c for c in df.columns
+            if c in [
+                f"{observable}_error_sup",
+                f"{observable}_err_up",
+                f"err_{observable}_up",
+            ]
+        ),
+        None,
+    )
 
-    if mult_err_sup_col and mult_err_inf_col:
-        mult_err = [df[mult_err_sup_col].to_numpy(), df[mult_err_inf_col].to_numpy()]
-    elif mult_err_col:
-        mult_err = df[mult_err_col].to_numpy()
+    err_inf_col = next(
+        (
+            c for c in df.columns
+            if c in [
+                f"{observable}_error_inf",
+                f"{observable}_err_low",
+                f"err_{observable}_low",
+            ]
+        ),
+        None,
+    )
+
+    err_col = next(
+        (
+            c for c in df.columns
+            if c in [
+                f"{observable}_error",
+                f"{observable}_err",
+                f"err_{observable}",
+            ]
+        ),
+        None,
+    )
+
+    values = df[value_col].to_numpy()
+
+    if err_sup_col and err_inf_col:
+        if reverse_asym_errors:
+            values_err = [
+                df[err_sup_col].to_numpy(),
+                df[err_inf_col].to_numpy(),
+            ]
+        else:
+            values_err = [
+                df[err_inf_col].to_numpy(),
+                df[err_sup_col].to_numpy(),
+            ]
+    elif err_col:
+        values_err = df[err_col].to_numpy()
     else:
-        mult_err = None
+        values_err = None
 
-    return energies, energies_err, mult, mult_err
+    return energies, energies_err, values, values_err
 
 
 # SCONE measurements reader

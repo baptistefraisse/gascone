@@ -7,7 +7,7 @@ from response import fit_scone_gconst_multiple
 
 # plots font size
 
-FONT_SIZE = 30
+FONT_SIZE = 25
 
 # physics constants 
 
@@ -37,18 +37,22 @@ FRAG_MOM_MICRO = 0.3
 
 _, _, nubar_jeff, nubar_jeff_err = csv_data_reader(EVAL_DIR/"238U_nubar_JEFF4.csv")
 
-# literature data : Qi
+# litterature : qi
 
-qi_energies, _, qi_mult, qi_mult_err = csv_data_reader(LIT_DIR/"Qi_200keV_data.csv")
+qi_energies, _, qi_mult, qi_mult_err = csv_data_reader(LIT_DIR / "Qi_200keV_data.csv", observable="mult")
+_, _, qi_egtot, qi_egtot_err = csv_data_reader(LIT_DIR / "Qi_200keV_data.csv", observable="egtot")
 
-# literature data: Laborie
+# litterature : laborie
 
-laborie_energies, laborie_energies_err, laborie_mult, laborie_mult_err = csv_data_reader(LIT_DIR/"Laborie_190keV_data.csv")
+laborie_energies, laborie_energies_err, laborie_mult, laborie_mult_err = csv_data_reader(LIT_DIR/"Laborie_190keV_data.csv", observable="mult", reverse_asym_errors=True)
+_, _, laborie_egtot, laborie_egtot_err = csv_data_reader(LIT_DIR/"Laborie_190keV_data.csv", observable="egtot")
 
 # simulations: CGMF
 
-cgmf_energies, _, cgmf_mult, _ = csv_data_reader(SIMU_DIR/"238U_CGMF_200keV.csv")
+cgmf_energies, _, cgmf_mult, _ = csv_data_reader(SIMU_DIR/"238U_CGMF_200keV.csv", observable="mult")
+cgmf_energies_egtot, _, cgmf_egtot, _ = csv_data_reader(SIMU_DIR/"238U_Egtot_CGMF_120keV.csv", observable="egtot")
 
 # simulations: GEF
 
-gef_energies, _, gef_mult, _ = csv_data_reader(SIMU_DIR/"238U_GEF_200keV.csv")
+gef_energies, _, gef_mult, _ = csv_data_reader(SIMU_DIR/"238U_GEF_200keV.csv", observable="mult")
+gef_energies_egtot, _, gef_egtot, _ = csv_data_reader(SIMU_DIR/"238U_Egtot_GEF_120keV.csv", observable="egtot")
