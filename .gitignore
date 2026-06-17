@@ -1,6 +1,8 @@
 *.png
 Mgbar.py
+Egtot.py
 __pycache__/
 figs/
 outputs/
 .venv/
+archives/

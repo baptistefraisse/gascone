@@ -9,23 +9,26 @@ import numpy as np
 
 # functions 
 
-
-def angmom_capture(e):
+def angmom_capture(e, de=0.5):
 
     """
-    Compute the evolution of gamma-rays multiplicity from 
-    its value at the lowest incident neutron energy.
+    Compute angular momentum from neutron capture.
 
     Args:
-        a (int): Mass number of target nucleus.
-        e (float or narray): Incident neutron energy.
+        e  (float or array-like): Incident neutron energy [MeV].
+        de (float or array-like): Energy uncertainty [MeV].
 
     Returns:
-        float or narray: Angular momentum from neutron capture  [hbar unit].
+        j0     : Angular momentum [hbar].
+        j0_err : Propagated uncertainty [hbar].
     """
-    j0 = np.sqrt(2.5*e + SN*SN)
-    de = 0.5 # 1 MeV binning
-    j0_err = de * 2.5 / (2*j0)
+
+    e = np.asarray(e)
+    de = np.asarray(de)
+
+    j0 = np.sqrt(2.5 * e + SN * SN)
+    j0_err = de * 2.5 / (2 * j0)
+
     return j0, j0_err
 
 
