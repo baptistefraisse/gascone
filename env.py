@@ -26,7 +26,7 @@ FILENAMES = [
 
 # SCONE constants 
 
-A, B, DA, DB = fit_scone_gconst_multiple(FILENAMES)
+A, B, DA, DB, PCOV_AB = fit_scone_gconst_multiple(FILENAMES)
 C, DC = 0.33, 0.01
 
 # Microscopic calculations result for angular momentum transfer to fragments
