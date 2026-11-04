@@ -6,6 +6,5 @@ figs/
 outputs/
 .venv/
 archives/
-
 !docs/fission.png
 !docs/scone.png
