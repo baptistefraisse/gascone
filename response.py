@@ -129,7 +129,7 @@ def fit_scone_gconst(emitted_mult, detected_mult):
     a, b = popt
     a_err, b_err = np.sqrt(np.diag(pcov))
     
-    return a, b, a_err, b_err
+    return a, b, a_err, b_err, pcov
 
 
 
@@ -169,4 +169,4 @@ def fit_scone_gconst_multiple(filenames, mult_range=None):
     a, b = popt
     a_err, b_err = np.sqrt(np.diag(pcov))
 
-    return a, b, a_err, b_err
+    return a, b, a_err, b_err, pcov

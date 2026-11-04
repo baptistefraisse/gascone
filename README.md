@@ -1,5 +1,17 @@
 # **GASCONE : Gamma-rays Analysis for SCONE**  
 
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/scone.png" width="350">
+    </td>
+    <td align="center">
+      <img src="docs/fission.png" width="320">
+    </td>
+  </tr>
+</table>
+
+
 ## **Description**  
 
 **GASCONE** is a high-level analysis framework for **SCONE** [1], aimed at unfolding and analyzing $\gamma$-ray observables from fission experiments.
@@ -17,7 +29,7 @@ External data are also used:
 
 ## **Outputs**  
 
-The main output is a CSV file of unfolded average $\gamma$-rays multiplicities saved in ***outputs/***. Some plots will also be generated: the fit of SCONE response to fission cascades, $\gamma$-rays multiplicities as a function of incident energy, $\gamma$-rays multiplicities as a function of the fissioning system angular momentum.
+The main output is a CSV file of unfolded average $\gamma$-ray multiplicity and total energy saved in ***outputs/***. Some plots will also be generated: the fit of SCONE response to fission cascades, $\gamma$-rays multiplicities as a function of incident energy, $\gamma$-rays multiplicities as a function of the fissioning system angular momentum, and total $\gamma$-ray energy.
 
 ## **Installation and use**
 
