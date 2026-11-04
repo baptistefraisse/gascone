@@ -6,7 +6,7 @@
       <img src="docs/scone.png" width="350">
     </td>
     <td align="center">
-      <img src="docs/fission.png" width="320">
+      <img src="docs/fission.png" width="218">
     </td>
   </tr>
 </table>
