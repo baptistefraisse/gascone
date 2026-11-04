@@ -1,5 +1,17 @@
 # **GASCONE : Gamma-rays Analysis for SCONE**  
 
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/scone.png" width="350">
+    </td>
+    <td align="center">
+      <img src="docs/fission.png" width="320">
+    </td>
+  </tr>
+</table>
+
+
 ## **Description**  
 
 **GASCONE** is a high-level analysis framework for **SCONE** [1], aimed at unfolding and analyzing $\gamma$-ray observables from fission experiments.
